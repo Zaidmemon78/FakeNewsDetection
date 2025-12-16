@@ -1040,3 +1040,65 @@ document.addEventListener("DOMContentLoaded", function () {
     // Load history on page load
     displayHistory();
 });
+// --- UPDATED ANALYZE FUNCTION FOR FLASK BACKEND ---
+async function analyzeContent(content, type) {
+
+    // URL check: Agar user ne URL dala hai toh hum bolenge sirf text support hai abhi
+    // (Advance version mein tu Python mein scraping laga sakta hai)
+    if (type === 'url') {
+        showToast("Currently supporting Text Analysis only. Please paste article text.", "warning");
+        // Temporary hack: URL ko hi text man ke bhej dete hain testing ke liye
+    }
+
+    try {
+        // Python Backend (/predict) ko call kar rahe hain
+        const response = await fetch('/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: content }),
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            showToast("Error: " + data.error, "error");
+            return;
+        }
+
+        // Backend se data receive hua
+        const verdict = data.verdict; // 'real' or 'fake'
+        const credibility = data.credibility; // 95 or 5
+
+        let explanationText = "";
+        let sources = [];
+
+        if (verdict === 'real') {
+            explanationText = "AI Analysis: The language pattern matches verified news sources.";
+            sources = [{ name: "Verified Pattern Match", url: "#" }];
+        } else {
+            explanationText = "AI Analysis: The content has patterns commonly found in fake news.";
+            sources = [];
+        }
+
+        // Result UI Update karo
+        displayResults(
+            content,
+            type,
+            verdict,
+            credibility,
+            explanationText,
+            sources
+        );
+
+        addToHistory(content, type, verdict, credibility);
+        const resultsSection = document.getElementById("results-section");
+        resultsSection.classList.remove("hidden");
+        resultsSection.scrollIntoView({ behavior: "smooth" });
+
+    } catch (err) {
+        console.error("Server connection failed", err);
+        showToast("Error connecting to Python server. Is app.py running?", "error");
+    }
+}
