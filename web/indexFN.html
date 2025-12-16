@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Fake News Detector</title>
+        <link rel="stylesheet" href="style.css" />
+        <!-- Font Awesome for icons -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+    </head>
+    <body>
+        <div class="theme-toggle">
+            <input type="checkbox" id="dark-mode-toggle" />
+            <label for="dark-mode-toggle">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+            </label>
+        </div>
+
+        <header>
+            <div class="logo">
+                <i class="fas fa-newspaper"></i>
+                <h1>Fake News Detector</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li>
+                        <a
+                            href="#home"
+                            class="nav-link active"
+                            data-section="home"
+                            >Home</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#about" class="nav-link" data-section="about"
+                            >About</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#history"
+                            class="nav-link"
+                            data-section="history"
+                            >History</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#faq" class="nav-link" data-section="faq"
+                            >FAQ</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#login"
+                            class="nav-link"
+                            data-section="login"
+                            id="login-nav-link"
+                            >Login</a
+                        >
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Home Section (Main Content) -->
+        <main id="home-section" class="section active">
+            <section class="hero">
+                <h2>Detect Fake News with AI</h2>
+                <p>
+                    Our advanced AI system analyzes news content to determine
+                    its credibility. Simply paste a news article or enter a URL
+                    to get started.
+                </p>
+            </section>
+
+            <section class="input-section">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="text">
+                        Text Input
+                    </button>
+                    <button class="tab-btn" data-tab="url">URL Input</button>
+                </div>
+
+                <div class="tab-content active" id="text-tab">
+                    <form id="text-form">
+                        <div class="form-group">
+                            <label for="news-text">Paste News Text</label>
+                            <textarea
+                                id="news-text"
+                                placeholder="Paste the full text of a news article to analyze its credibility..."
+                                required
+                            ></textarea>
+                        </div>
+                        <div class="form-group file-upload">
+                            <label for="text-file-upload">
+                                <i class="fas fa-file-upload"></i> Upload Image
+                                (Optional)
+                            </label>
+                            <input
+                                type="file"
+                                id="text-file-upload"
+                                accept="image/*"
+                            />
+                            <span class="file-name" id="text-file-name"></span>
+                        </div>
+                        <button type="submit" class="submit-btn">
+                            <span class="btn-text">Analyze Text</span>
+                            <span class="spinner hidden"></span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="tab-content" id="url-tab">
+                    <form id="url-form">
+                        <div class="form-group">
+                            <label for="news-url">Enter News URL</label>
+                            <input
+                                type="url"
+                                id="news-url"
+                                placeholder="https://example.com/news-article"
+                                required
+                            />
+                            <div class="suggestions" id="url-suggestions"></div>
+                        </div>
+                        <div class="form-group file-upload">
+                            <label for="url-file-upload">
+                                <i class="fas fa-file-upload"></i> Upload
+                                Screenshot (Optional)
+                            </label>
+                            <input
+                                type="file"
+                                id="url-file-upload"
+                                accept="image/*"
+                            />
+                            <span class="file-name" id="url-file-name"></span>
+                        </div>
+                        <button type="submit" class="submit-btn">
+                            <span class="btn-text">Analyze URL</span>
+                            <span class="spinner hidden"></span>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <section class="results-section hidden" id="results-section">
+                <div class="results-card">
+                    <div class="results-header">
+                        <h3>Analysis Results</h3>
+                        <div
+                            class="share-btn"
+                            id="share-btn"
+                            title="Copy result link"
+                        >
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                    </div>
+                    <div class="verdict">
+                        <div class="verdict-icon" id="verdict-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="verdict-text" id="verdict-text">
+                            Analyzing...
+                        </div>
+                    </div>
+                    <div class="confidence">
+                        <div class="confidence-label">Confidence Score:</div>
+                        <div class="confidence-value" id="confidence-value">
+                            0%
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <div class="explanation" id="explanation"></div>
+                    <div class="sources-section">
+                        <h4>Verified Sources:</h4>
+                        <ul class="sources-list" id="sources-list"></ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="how-it-works">
+                <h3>How It Works</h3>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-keyboard"></i>
+                        </div>
+                        <h4>Input News</h4>
+                        <p>
+                            Paste article text or enter a URL to a news article
+                            you want to verify.
+                        </p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h4>AI Analysis</h4>
+                        <p>
+                            Our advanced algorithms analyze the content for
+                            signs of misinformation.
+                        </p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h4>Get Results</h4>
+                        <p>
+                            Receive a detailed credibility score with
+                            explanation of the analysis.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="history-section">
+                <div class="history-header">
+                    <h3>Recent Checks</h3>
+                    <button id="clear-history" class="clear-btn">
+                        Clear History
+                    </button>
+                </div>
+                <div class="history-list" id="history-list">
+                    <p class="empty-history">No recent checks found.</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Login Section -->
+        <main id="login-section" class="section">
+            <div class="login-container">
+                <div class="login-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="login-header">
+                    <h2>Welcome Back</h2>
+                    <p>Sign in to access your account and history</p>
+                </div>
+
+                <div class="social-login">
+                    <button class="social-btn">
+                        <i class="fab fa-google"></i>
+                        <span>Google</span>
+                    </button>
+                    <button class="social-btn">
+                        <i class="fab fa-facebook-f"></i>
+                        <span>Facebook</span>
+                    </button>
+                </div>
+
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input
+                            type="email"
+                            id="login-email"
+                            placeholder="Enter your email"
+                            required
+                        />
+                        <div class="error-message" id="login-email-error">
+                            Please enter a valid email address
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <div class="password-field">
+                            <input
+                                type="password"
+                                id="login-password"
+                                placeholder="Enter your password"
+                                required
+                            />
+                            <span
+                                class="toggle-password"
+                                id="login-toggle-password"
+                            >
+                                <i class="far fa-eye"></i>
+                            </span>
+                        </div>
+                        <div class="error-message" id="login-password-error">
+                            Password must be at least 6 characters
+                        </div>
+                    </div>
+
+                    <div class="remember-forgot">
+                        <label class="remember-me">
+                            <input type="checkbox" id="remember-me" />
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Sign In</span>
+                        <span class="spinner hidden"></span>
+                    </button>
+                </form>
+
+                <div class="register-link">
+                    Don't have an account?
+                    <a href="#register" id="register-link">Register Now</a>
+                </div>
+            </div>
+        </main>
+
+        <!-- Register Section -->
+        <main id="register-section" class="section">
+            <div class="login-container">
+                <div class="login-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="login-header">
+                    <h2>Create Account</h2>
+                    <p>Join our community to detect fake news</p>
+                </div>
+
+                <div class="social-login">
+                    <button class="social-btn">
+                        <i class="fab fa-google"></i>
+                        <span>Google</span>
+                    </button>
+                    <button class="social-btn">
+                        <i class="fab fa-facebook-f"></i>
+                        <span>Facebook</span>
+                    </button>
+                </div>
+
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-name">Full Name</label>
+                        <input
+                            type="text"
+                            id="register-name"
+                            placeholder="Enter your full name"
+                            required
+                        />
+                        <div class="error-message" id="register-name-error">
+                            Please enter your name
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email Address</label>
+                        <input
+                            type="email"
+                            id="register-email"
+                            placeholder="Enter your email"
+                            required
+                        />
+                        <div class="error-message" id="register-email-error">
+                            Please enter a valid email address
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <div class="password-field">
+                            <input
+                                type="password"
+                                id="register-password"
+                                placeholder="Create a password"
+                                required
+                            />
+                            <span
+                                class="toggle-password"
+                                id="register-toggle-password"
+                            >
+                                <i class="far fa-eye"></i>
+                            </span>
+                        </div>
+                        <div class="error-message" id="register-password-error">
+                            Password must be at least 6 characters
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <div class="password-field">
+                            <input
+                                type="password"
+                                id="confirm-password"
+                                placeholder="Confirm your password"
+                                required
+                            />
+                            <span
+                                class="toggle-password"
+                                id="toggle-confirm-password"
+                            >
+                                <i class="far fa-eye"></i>
+                            </span>
+                        </div>
+                        <div class="error-message" id="confirm-password-error">
+                            Passwords do not match
+                        </div>
+                    </div>
+
+                    <div class="remember-forgot">
+                        <label class="remember-me">
+                            <input type="checkbox" id="terms" required />
+                            <span
+                                >I agree to the
+                                <a href="#">Terms & Conditions</a></span
+                            >
+                        </label>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Create Account</span>
+                        <span class="spinner hidden"></span>
+                    </button>
+                </form>
+
+                <div class="register-link">
+                    Already have an account?
+                    <a href="#login" id="login-link">Sign In</a>
+                </div>
+            </div>
+        </main>
+
+        <!-- About Section (Placeholder) -->
+        <main id="about-section" class="section">
+            <div class="content-container">
+                <h2>About Fake News Detector</h2>
+                <p>
+                    Our mission is to help people identify misinformation and
+                    promote media literacy.
+                </p>
+                <div class="about-content">
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3>Our Mission</h3>
+                        <p>
+                            We aim to combat the spread of misinformation by
+                            providing tools that help people verify the
+                            credibility of news content they encounter online.
+                        </p>
+                    </div>
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Our Technology</h3>
+                        <p>
+                            We use advanced AI and machine learning algorithms
+                            to analyze news content for signs of misinformation,
+                            bias, and factual inaccuracies.
+                        </p>
+                    </div>
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Our Team</h3>
+                        <p>
+                            Our team consists of data scientists, journalists,
+                            and developers committed to promoting truth and
+                            accuracy in media.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- FAQ Section (Placeholder) -->
+        <main id="faq-section" class="section">
+            <div class="content-container">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How accurate is the fake news detection?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>
+                                Our system has an accuracy rate of approximately
+                                85-90% based on our testing. However, we always
+                                recommend verifying information from multiple
+                                sources.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How does the detection algorithm work?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>
+                                Our algorithm analyzes various factors including
+                                language patterns, source credibility,
+                                cross-referencing with known facts, and
+                                comparison with verified news sources.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Is my data secure when I use this tool?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>
+                                Yes, we do not store the full text of articles
+                                you submit. We only keep anonymized metadata for
+                                improving our algorithm.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Can I use this tool for any language?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>
+                                Currently, our tool works best with English
+                                content. We are working on expanding to other
+                                languages in the future.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <p>
+                    &copy; <span id="current-year"></span> Fake News Detector.
+                    All rights reserved.
+                </p>
+                <p>
+                    This tool is for educational purposes only. Always verify
+                    information from multiple sources.
+                </p>
+            </div>
+        </footer>
+
+        <div class="toast hidden" id="toast">
+            <div class="toast-content" id="toast-content"></div>
+            <button class="toast-close" id="toast-close">&times;</button>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
